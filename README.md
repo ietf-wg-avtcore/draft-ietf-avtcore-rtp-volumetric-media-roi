@@ -3,7 +3,7 @@
 This repository is used for discussion of IETF [AVTCORE Working Group] (https://datatracker.ietf.org/group/avtcore/documents/) Internet-Draft for Viewport and Region-of-Interest-Dependent Delivery of Visual Volumetric Media (draft-ietf-avtcore-rtp-volumetric-media-roi). 
 
 * Current draft in [IETF Datatracker](https://datatracker.ietf.org/doc/draft-ietf-avtcore-rtp-volumetric-media-roi/).
-* [Current version draft in Github] (https://github.com/7439henry/draft-hsyang-avtcore-rtp-haptics/blob/main/Draft/draft-hsyang-avtcore-rtp-haptics-00.txt)
+* [Current version draft in Github](https://github.com/srinivasgu/draft-ietf-avtcore-rtp-volumetric-media-roi/blob/main/draft/draft-ietf-avtcore-rtp-volumetric-media-roi-00.md)
 
 ## Copy of abstract
 This document describes RTCP messages and RTP header extensions to enable partial access and support viewport- and region-of-interest-dependent delivery of visual volumetric media such as visual volumetric video-based coding (V3C). Partial access refers to the ability to access retrieve or deliver only a subset of the media content. The RTCP messages and RTP header extensions described in this document are useful for XR services which transport coded visual volumetric content, such as point clouds.
