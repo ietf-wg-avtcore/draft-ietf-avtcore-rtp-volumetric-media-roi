@@ -1,7 +1,7 @@
 ---
 title: "Viewport and Region-of-Interest-Dependent Delivery of Visual Volumetric Media"
 abbrev: VOLUMETRIC-MEDIA-ROI-DELIVERY
-docname: draft-ietf-avtcore-rtp-volumetric-media-roi-00
+docname: draft-ietf-avtcore-rtp-volumetric-media-roi-01
 date: {DATE}
 stream: IETF
 category: std
@@ -199,27 +199,23 @@ The RTCP feedback message for requesting a viewport is identified by the RTCP pa
  0                   1                   2                   3   
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|E|C|I|F|R| CT  | cam_pos_x(h)  |  cam_pos_x    |  cam_pos_x    | 
+|E|C|I|F|L| CT  | cam_pos_x(h)  |  cam_pos_x    |  cam_pos_x    | 
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 | cam_pos_x(l)  |  cam_pos_y(h) |  cam_pos_y    |  cam_pos_y    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 | cam_pos_y(l)  |  cam_pos_z(h) |  cam_pos_z    |  cam_pos_z    |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| cam_pos_z(l)  |  cam_quat_x(h)|  cam_quat_x   |  cam_quat_x(l)|
+| cam_pos_z(l)  |  cam_quat_x(h)|  cam_quat_x(l)|  cam_quat_y(h)|
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| cam_quat_x(l) |  cam_quat_y(h)|  cam_quat_y   |  cam_quat_y(l)|
+| cam_quat_y(l) |  cam_quat_z(h)|  cam_quat_z(l)| horizontal_fov
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| cam_quat_y(l) |  cam_quat_z(h)|  cam_quat_z   |  cam_quat_z   |
+          horizontal_fov                        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-| cam_quat_z(l) |         horizontal_fov                        |
+                          vertical_fov          |               
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|               |         vertical_fov                          |
+                        clipping_near_plane     |                
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|               |         clipping_near_plane                   |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|               |         clipping_far_plane                    |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|               |         OPTIONAL Zero padding                 |
+                         clipping_far_plane     |  Zero padding |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 
@@ -229,23 +225,23 @@ The desired viewport information in the RTCP feedback viewport message is compos
 
 > ext_camera_flag (E) [1 bit]: This flag value equal to 1 indicates that extrinsic camera parameters information is present in the message. Value 0 indicates that extrinsic camera parameters information is not present in the message.
 
-> center_view_flag (C) [1 bit]: This flag indicates whether the signalled viewport position corresponds to the center of the viewport or to one of two stereo positions of the viewport. Value 1 indicates that the signalled viewport position corresponds to the center of the viewport. Value 0 indicates that the signalled viewport position corresponds to one of two stereo positions of the viewport. When ext_camera_flag is set to value 0, this flag value is set to 0 otherwise set to 1.
+> center_view_flag (C) [1 bit]: This flag indicates whether the signalled viewport position corresponds to the center of the viewport or to one of two stereo positions of the viewport. Value 1 indicates that the signalled viewport position corresponds to the center of the viewport. Value 0 indicates that the signalled viewport position corresponds to one of two stereo positions of the viewport. When ext_camera_flag is set to value 0, this flag value is set to 0.
 
 > int_camera_flag (I) [1 bit]: Intrinsic camera flag value equal to 1 indicates that intrinsic camera parameters information is present in the message. Value 0 indicates that intrinsic camera parameters information is not present in the message.
 
 > equal_fov_flag (F) [1 bit]: This flag indicates weather the horizontal FOV and the vertical FOV of the viewport are equal or not. Value 1 indicates the horizontal FOV and vertical FOV are equal. Value 0 indicates horizontal FOV and vertical FOV are not equal. When int_camera_flag value is 0, this flag value is set to 1 otherwise set to 0.
 
-> resv (R) [1 bit]: This is reserved for reserved for future definition.
+> left_view_flag (L) [1 bit]: This flag indicates weather the signalled viewport information correspond to the left or the right stereo position of the viewport. Value 1 indicates that the signalled viewport information corresponds to the left stereo position of the viewport. Value 0 indicates that the viewport information signalled correspond to the right stereo positions of the viewport.
 
-> camera_type (CT) [3 bits]: indicates the projection method of the viewport. Value 0 specifies equirectangular projection (ERP). Value 1 specifies a perspective projection. Value 2 specifies an orthographic projection. Values in the range 3 to 2557 are reserved for future use.
+> camera_type (CT) [3 bits]: indicates the projection method of the viewport. Value 0 specifies equirectangular projection (ERP). Value 1 specifies a perspective projection. Value 2 specifies an orthographic projection. Values in the range 3 to 7 are reserved for future use.
 
 > cam_pos_x, cam_pos_y, and cam_pos_z (32 bits): respectively, indicate the x, y, and z coordinates of the position of the camera in metres in the global reference coordinate system. The value for each field is expressed in 32-bit binary floating-point format with the 4 bytes in big-endian order and with the parsing process as specified in IEEE 754. This information shall be present only when the ext_camera_flag (E bit) is set to 1.
 
-> cam_quat_x, cam_quat_y, and cam_quat_z (32 bits): indicate the x, y, and z components, respectively, of the rotation of the camera using the quaternion representation. The values are in the range of -2^30 to 2^30, inclusive. When the component of rotation is not present, its value is inferred to be equal to 0. This information shall be present only when the ext_camera_flag (E bit) is set to 1.
+> cam_quat_x, cam_quat_y, and cam_quat_z (32 bits): indicate the x, y, and z components, respectively, of the rotation of the camera using the quaternion representation. The values are in the range of -2^14 to 2^14, inclusive. When the component of rotation is not present, its value is inferred to be equal to 0. This information shall be present only when the ext_camera_flag (E bit) is set to 1.
     
 > > The value of rotation components may be calculated as follows:
 
-> > qX = cam_quat_x / 2^30, qY = cam_quat_y / 2^30, qZ = cam_quat_z / 2^30
+> > qX = cam_quat_x / 2^14, qY = cam_quat_y / 2^14, qZ = cam_quat_z / 2^14
     
 > > The fourth component, qW, for the rotation of the current camera model using the quaternion representation is calculated as follows:
 
